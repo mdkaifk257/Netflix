@@ -14,6 +14,17 @@ const firebaseConfig = {
     appId: import.meta.env.VITE_FIREBASE_APP_ID
 };
 
+// Validate config
+const requiredKeys = Object.keys(firebaseConfig) as (keyof typeof firebaseConfig)[];
+const missingKeys = requiredKeys.filter(key => !firebaseConfig[key]);
+
+if (missingKeys.length > 0) {
+    const errorMessage = `Missing Firebase Configuration Keys: ${missingKeys.join(', ')}. Please add them to your .env file or Vercel Environment Variables.`;
+    console.error(errorMessage);
+    alert(errorMessage);
+    throw new Error(errorMessage);
+}
+
 // Initialize Firebase
 export const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
