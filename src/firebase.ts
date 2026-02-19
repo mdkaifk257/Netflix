@@ -16,16 +16,17 @@ const firebaseConfig = {
 
 // Validate config
 const requiredKeys = Object.keys(firebaseConfig) as (keyof typeof firebaseConfig)[];
-const missingKeys = requiredKeys.filter(key => !firebaseConfig[key]);
+export const missingKeys = requiredKeys.filter(key => !firebaseConfig[key]);
 
-if (missingKeys.length > 0) {
-    const errorMessage = `Missing Firebase Configuration Keys: ${missingKeys.join(', ')}. Please add them to your .env file or Vercel Environment Variables.`;
-    console.error(errorMessage);
-    alert(errorMessage);
-    throw new Error(errorMessage);
+// Initialize Firebase (only if config is valid to prevent crashes)
+let app: any;
+let auth: any;
+let db: any;
+
+if (missingKeys.length === 0) {
+    app = initializeApp(firebaseConfig);
+    auth = getAuth(app);
+    db = getFirestore(app);
 }
 
-// Initialize Firebase
-export const app = initializeApp(firebaseConfig);
-export const auth = getAuth(app);
-export const db = getFirestore(app);
+export { app, auth, db };
